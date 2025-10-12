@@ -1,13 +1,10 @@
-#!/usr/bin/env sh
-. "$(dirname -- "$0")/_/husky.sh"
-
-echo "ğŸ” Running pre-commit checks..."
+echo "í´ Running pre-commit checks..."
 
 # Run lint-staged (formatting and linting)
 npx lint-staged
 
 # Type check
-echo "ğŸ“ Type checking..."
+echo "í³ Type checking..."
 npm run type-check
 
 echo "âœ… Pre-commit checks passed!"
