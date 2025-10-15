@@ -10,7 +10,7 @@
     "dev": "nodemon",
     "build": "rimraf dist && tsc",
     "build:watch": "tsc --watch",
-    "start": "node dist/server.js",
+    "start": "node --env-file=.env dist/server.js",
     "start:prod": "NODE_ENV=production node dist/server.js",
     "type-check": "tsc --noEmit",
     "test": "echo \"Error: no test specified\" && exit 1",
