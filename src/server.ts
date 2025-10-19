@@ -10,8 +10,8 @@ app.get('/health', (_, res) => {
       statusCode: 200,
       data: null,
     });
-  } catch (error: unknown) {
-    console.error('Something went wrong while check Health check');
+  } catch (error) {
+    console.error('Something went wrong while check Health check', error);
   }
 });
 
