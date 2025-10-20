@@ -21,6 +21,7 @@
     "lint:staged": "lint-staged",
     "prepare": "husky",
     "clean": "rimraf dist",
+    "prisma:update": "prisma migrate dev && prisma generate",
     "validate": "npm run type-check && npm run lint && npm run format"
   },
   "lint-staged": {
