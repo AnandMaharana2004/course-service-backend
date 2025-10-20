@@ -1,6 +1,11 @@
 import { Request, Response, NextFunction } from 'express';
 
-export const errorHandler = (err: unknown, req: Request, res: Response) => {
+export const errorHandler = (
+  err: unknown,
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
   const statusCode =
     typeof err === 'object' && err !== null && 'statusCode' in err
       ? (err as any).statusCode
