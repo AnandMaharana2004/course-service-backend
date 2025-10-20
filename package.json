@@ -43,12 +43,14 @@
     "husky": "^9.1.7",
     "nodemon": "^3.1.10",
     "prettier": "^3.6.2",
+    "prisma": "^6.17.1",
     "rimraf": "^6.0.1",
     "ts-node": "^10.9.2",
     "typescript": "^5.9.3"
   },
   "dependencies": {
     "-": "^0.0.1",
+    "@prisma/client": "^6.17.1",
     "express": "^5.1.0",
     "save-dev": "^0.0.1-security"
   },
