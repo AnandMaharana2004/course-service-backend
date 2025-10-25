@@ -64,7 +64,7 @@ model Video {
 model Otp {
   id        Int      @id @default(autoincrement())
   email     String   @unique
-  code      String
+  otp       Int
   purpose   String
   verified  Boolean  @default(false)
   createdAt DateTime @default(now())
