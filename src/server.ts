@@ -1,11 +1,16 @@
-import Express from 'express';
-import { asyncHandler, errorHandler } from './middleware/ErrorHandler';
+import Express, { Request } from 'express';
+import { errorHandler } from './middleware/ErrorHandler';
 
 import { sendSuccess } from './utils/Response';
 import { NotFoundError } from './utils/Error';
 
+import { authRouter } from './routes/auth.route';
+import { asyncHandler } from './utils/asyncHandler';
+
 const app = Express();
-const port = process.env.PORT;
+
+app.use(Express.json());
+app.use(Express.urlencoded({ extended: true }));
 
 app.get('/health', (_, res, next) => {
   try {
@@ -16,6 +21,9 @@ app.get('/health', (_, res, next) => {
   }
 });
 
+// Routes
+app.use('/auth', authRouter);
+
 // Not found error
 app.use(
   asyncHandler((req: Request) => {
@@ -23,7 +31,10 @@ app.use(
   }),
 );
 
+// Error handler middleware
 app.use(errorHandler);
+
+const port = process.env.PORT;
 app.listen(port, () => {
   console.log(`Application listen on port : ${port}`);
 });
