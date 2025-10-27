@@ -91,3 +91,16 @@ model Session {
   @@index([userId])
   @@index([expiresAt])
 }
+
+model ForgotPasswordToken {
+  id         String   @id @default(uuid())
+  user_id    Int      @unique // ← Add @unique here
+  token_hash String   @unique
+  expiresAt  DateTime
+  used       Boolean  @default(false)
+  ip_address String?
+  createdAt  DateTime @default(now())
+
+  @@index([token_hash])
+  @@index([expiresAt])
+}
