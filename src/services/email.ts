@@ -3,6 +3,7 @@ export type EmailType =
   | 'login'
   | 'marketing'
   | 'passwordReset'
+  | 'setNewPasswordLink'
   | 'custom';
 
 interface EmailOptions {
@@ -11,6 +12,7 @@ interface EmailOptions {
   subject?: string;
   message?: string;
   otp?: string | number; // ✅ user-provided OTP
+  url?: string;
 }
 
 export const sendEmail = async ({
@@ -19,6 +21,7 @@ export const sendEmail = async ({
   subject,
   message,
   otp,
+  url,
 }: EmailOptions) => {
   try {
     // 📩 Define email templates using object mapping
@@ -41,6 +44,12 @@ export const sendEmail = async ({
       passwordReset: () => ({
         subject: 'Password Reset Request',
         body: 'We received a request to reset your password. Please click the link below to continue.',
+      }),
+      setNewPasswordLink: () => ({
+        subject: 'Set Your New Password',
+        body: url
+          ? `Hello 👋,\n\nClick the link below to set your new password:\n\n${url}\n\nIf you didn't request this, please ignore this message.`
+          : 'A password setup link was generated, but no URL was provided.',
       }),
       custom: () => {
         if (!subject || !message) {
