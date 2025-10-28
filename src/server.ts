@@ -6,12 +6,15 @@ import { NotFoundError } from './utils/Error';
 
 import { authRouter } from './routes/auth.route';
 import { asyncHandler } from './utils/asyncHandler';
+import { globalRateLimiter } from './middleware/Ratelimitor';
 
 const app = Express();
 
 app.use(Express.json());
 app.use(Express.urlencoded({ extended: true }));
 
+app.set('trust proxy', 1);
+app.use(globalRateLimiter);
 app.get('/health', (_, res, next) => {
   try {
     return sendSuccess(res, null, 'Server Health is GOOD 👍');

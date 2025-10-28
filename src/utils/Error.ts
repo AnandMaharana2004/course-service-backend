@@ -55,6 +55,12 @@ export class ValidationError extends AppError {
     super(message, 422, true);
   }
 }
+//429 - Too Many Request Error
+export class ToomanyRequestError extends AppError {
+  constructor(message: string = 'Too Many Request, plece try after sometime') {
+    super(message, 429, true);
+  }
+}
 
 // 500 - Internal Server Error (NOT Operational - should be logged!)
 export class InternalServerError extends AppError {
