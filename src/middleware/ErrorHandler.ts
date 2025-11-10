@@ -1,39 +1,62 @@
 import { Request, Response, NextFunction } from 'express';
+import AppError from '../utils/Error';
 
-export const errorHandler = (err: unknown, req: Request, res: Response) => {
-  const statusCode =
-    typeof err === 'object' && err !== null && 'statusCode' in err
-      ? (err as any).statusCode
-      : 500;
+export const errorHandler = (
+  err: unknown,
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  // Default values for unknown errors
+  let statusCode = 500;
+  let message = 'Something went wrong';
+  let isOperational = false;
+  let stack: string | undefined;
 
-  // Get error message
-  const message =
-    typeof err === 'object' && err !== null && 'message' in err
-      ? (err as any).message
-      : 'Something went wrong';
+  // Check if it's our custom AppError
+  if (err instanceof AppError) {
+    statusCode = err.statusCode;
+    message = err.message;
+    isOperational = err.isOperational;
+    stack = err.stack;
+  } else if (err instanceof Error) {
+    // Native Error or other errors
+    message = err.message;
+    stack = err.stack;
+  }
 
-  //log error logic
-  console.error(`${req.method} ${req.url} - ${message}`, {
-    stack:
-      typeof err === 'object' && err !== null && 'stack' in err
-        ? (err as any).stack
-        : undefined,
-  });
+  // ✅ Only log non-operational errors (internal/unexpected errors)
+  if (!isOperational) {
+    console.error(`[INTERNAL ERROR] ${req.method} ${req.url}`, {
+      message,
+      statusCode,
+      stack,
+      body: req.body,
+      params: req.params,
+      query: req.query,
+      user: (req as any).user?.id,
+      timestamp: new Date().toISOString(),
+    });
+  } else {
+    // Optional: Light logging for operational errors (for metrics/monitoring)
+    console.info(
+      `[CLIENT ERROR] ${req.method} ${req.url} - ${statusCode} - ${message}`,
+    );
+  }
 
   // Send response
   res.status(statusCode).json({
     success: false,
     message,
-    // Only show stack trace in development
+    // ✅ Only show stack for non-operational errors in development
     ...(process.env.NODE_ENV === 'development' &&
-      typeof err === 'object' &&
-      err !== null &&
-      'stack' in err && { stack: (err as any).stack }),
+      !isOperational &&
+      stack && { stack }),
   });
 };
 
-export const asyncHandler = (fn: Function) => {
-  return (req: Request, res: Response, next: NextFunction) => {
-    Promise.resolve(fn(req, res, next)).catch(next);
-  };
-};
+// export const asyncHandler = (fn: Function) => {
+//   return (req: Request, res: Response, next: NextFunction) => {
+//     Promise.resolve(fn(req, res, next)).catch(next);
+//   };
+// };

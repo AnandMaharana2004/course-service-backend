@@ -1,0 +1,106 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// what run after change someting:- npm run prisma:update -- --name add_comment_model
+generator client {
+  provider = "prisma-client-js"
+  // output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           Int       @id @default(autoincrement())
+  name         String    @unique
+  email        String    @unique
+  password     String?
+  profileImage String?
+  mobileNumber String?
+  bio          String?
+  role         UserRole  @default(STUDENT)
+  sessions     Session[]
+  createdAt    DateTime  @default(now())
+  updateAt     DateTime
+}
+
+enum UserRole {
+  ADMIN
+  INSTRUCTOR
+  STUDENT
+}
+
+model Course {
+  id          Int      @id @default(autoincrement())
+  name        String
+  cover_image String
+  discription String
+  author      String
+  prise       Int?
+  createdAt   DateTime @default(now())
+  updateAt    DateTime
+}
+
+model Chapter {
+  id        Int      @id @default(autoincrement())
+  course_id Int
+  createdAt DateTime @default(now())
+  updateAt  DateTime
+}
+
+model Video {
+  id          Int      @id @default(autoincrement())
+  chapter_id  Int
+  video_Url   String
+  thamdil_url String
+  duration    Int
+  createdAt   DateTime @default(now())
+  updateAt    DateTime
+}
+
+// this is a tamporary model and in future we will shift otp and session to redis DB
+model Otp {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  otp       Int
+  purpose   String
+  verified  Boolean  @default(false)
+  createdAt DateTime @default(now())
+  expiresAt DateTime
+
+  @@index([email])
+  @@index([expiresAt])
+}
+
+model Session {
+  id           String    @id @default(uuid())
+  userId       Int
+  role         UserRole  @default(STUDENT)
+  data         Json? // optional session data (e.g., JWT payload)
+  ip           String? // optional
+  userAgent    String? // optional
+  refreshToken String? // optional
+  createdAt    DateTime  @default(now())
+  expiresAt    DateTime
+  lastAccessed DateTime? // optional
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+  @@index([expiresAt])
+}
+
+model ForgotPasswordToken {
+  id         String   @id @default(uuid())
+  user_id    Int      @unique // ← Add @unique here
+  token_hash String   @unique
+  expiresAt  DateTime
+  used       Boolean  @default(false)
+  ip_address String?
+  createdAt  DateTime @default(now())
+
+  @@index([token_hash])
+  @@index([expiresAt])
+}

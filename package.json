@@ -21,6 +21,7 @@
     "lint:staged": "lint-staged",
     "prepare": "husky",
     "clean": "rimraf dist",
+    "prisma:update": "prisma migrate dev && prisma generate",
     "validate": "npm run type-check && npm run lint && npm run format"
   },
   "lint-staged": {
@@ -43,14 +44,17 @@
     "husky": "^9.1.7",
     "nodemon": "^3.1.10",
     "prettier": "^3.6.2",
+    "prisma": "^6.17.1",
     "rimraf": "^6.0.1",
     "ts-node": "^10.9.2",
     "typescript": "^5.9.3"
   },
   "dependencies": {
     "-": "^0.0.1",
+    "@prisma/client": "^6.17.1",
     "express": "^5.1.0",
-    "save-dev": "^0.0.1-security"
+    "save-dev": "^0.0.1-security",
+    "zod": "^4.1.12"
   },
   "engines": {
     "node": ">=22.0.0",
